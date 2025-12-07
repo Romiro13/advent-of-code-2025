@@ -2,16 +2,19 @@ use std::fs;
 
 type Result<T> = core::result::Result<T, Box<dyn core::error::Error>>;
 
-fn zero_count(input: &str) -> i32 {
-  let lines = input
+fn parse_input(input: &str) -> Vec<i32> {
+  input
     .lines()
     .map(|v| {
       let (l, r) = v.trim().split_at(1);
-      let r = r.parse::<i32>().unwrap();
+      let r = r.parse::<i32>().expect("Should be a number.");
 
       if l == "L" { -r } else { r }
     })
-    .collect::<Vec<_>>();
+    .collect()
+}
+fn part01(input: &str) -> i32 {
+  let lines = parse_input(input);
 
   let mut z_count = 0i32;
   lines.into_iter().fold(50, |dial, clicks| {
@@ -27,16 +30,8 @@ fn zero_count(input: &str) -> i32 {
   z_count
 }
 
-fn all_zero_count(input: &str) -> i32 {
-  let lines = input
-    .lines()
-    .map(|v| {
-      let (l, r) = v.trim().split_at(1);
-      let r = r.parse::<i32>().unwrap();
-
-      if l == "L" { -r } else { r }
-    })
-    .collect::<Vec<_>>();
+fn part02(input: &str) -> i32 {
+  let lines = parse_input(input);
 
   let mut z_count = 0i32;
 
@@ -68,9 +63,9 @@ fn all_zero_count(input: &str) -> i32 {
 fn main() -> Result<()> {
   let input = fs::read_to_string("inputs/day01.txt")?;
 
-  println!("Day 01 test 01: {}", zero_count(&input));
+  println!("Day 01 test 01: {}", part01(&input));
 
-  println!("Day 01 test 02: {}", all_zero_count(&input));
+  println!("Day 01 test 02: {}", part02(&input));
 
   Ok(())
 }
@@ -92,16 +87,16 @@ mod tests {
       L82";
 
   #[test]
-  fn test_part2() {
+  fn test_part02() {
     let fx_expect = 6;
 
-    assert_eq!(all_zero_count(FX_INPUT), fx_expect)
+    assert_eq!(part02(FX_INPUT), fx_expect)
   }
 
   #[test]
-  fn test_part1() {
+  fn test_part01() {
     let fx_expect = 3;
 
-    assert_eq!(zero_count(FX_INPUT), fx_expect)
+    assert_eq!(part01(FX_INPUT), fx_expect)
   }
 }
